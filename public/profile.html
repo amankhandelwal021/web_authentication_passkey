@@ -15,7 +15,7 @@
 
         registerPasskeyBtn.addEventListener('click', async (e) => {
             const url = new URL(window.location)
-            const userId = url.searchParams.get('userId')
+            const userId = url.searchParams.get('userId');
 
             const response = await fetch('/register-challenge', {
                 method: 'POST',
@@ -29,15 +29,20 @@
             const { options } = challengeResult // Server side challenge
 
             const authenticationResult = await SimpleWebAuthnBrowser.startRegistration({...options, })
-            console.log(authenticationResult)
 
-            await fetch('/register-verify', {
+            const result = await fetch('/register-verify', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ userId, cred: authenticationResult })
-            })
+            });
+
+            const verificationResult = await result.json();
+
+            if (verificationResult.verified) {
+                window.location.replace(`http://localhost:3000/login.html?userId=${userId}`);
+            }
 
         })
     </script>

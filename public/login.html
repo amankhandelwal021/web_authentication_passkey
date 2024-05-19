@@ -14,7 +14,16 @@
     <script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
     <script>
          const form = document.getElementById('login-form');
-         const userIdField = document.getElementById('userId')
+         const userIdField = document.getElementById('userId');
+
+         const url = new URL(window.location)
+         const userId = url.searchParams.get('userId');
+
+         window.addEventListener('DOMContentLoaded', () => {
+            if (userId) {
+                userIdField.value = userId;
+            }
+         });
 
          form.addEventListener('submit', async e => {
             e.preventDefault()
@@ -32,15 +41,20 @@
             const { options } = challengeResult // Server side challenge
 
             const authenticationResult = await SimpleWebAuthnBrowser.startAuthentication(options)
-            console.log(authenticationResult)
 
-            await fetch('/login-verify', {
+            const result = await fetch('/login-verify', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ userId, cred: authenticationResult })
-            })
+            });
+
+            const verificationResult = await result.json();
+
+            if (verificationResult.success) {
+                window.location.replace(`http://localhost:3000/success.html`);
+            }
          })
 
     </script>

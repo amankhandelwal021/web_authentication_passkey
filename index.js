@@ -79,7 +79,7 @@ app.post('/register-verify', async (req, res) => {
     if (!verificationResult.verified) return res.json({ error: 'could not verify' });
     userStore[userId].passkey = verificationResult.registrationInfo
 
-    return res.json({ verified: true })
+    return res.json({ verified: true, user })
 
 })
 
