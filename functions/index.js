@@ -1,4 +1,5 @@
-const express = require('express')
+const express = require('express');
+const serverless = require("serverless-http");
 const crypto = require("node:crypto");
 const { 
     generateRegistrationOptions, 
@@ -14,9 +15,12 @@ if (!globalThis.crypto) {
 
 const PORT = 3000
 const app = express();
+const router = express.Router();
 
 app.use(express.static('./public'))
-app.use(express.json())
+app.use(express.json());
+
+app.use("/.netlify/functions/app", router);
 
 // States
 const userStore = {}
