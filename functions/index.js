@@ -1,5 +1,4 @@
 const express = require('express');
-const serverless = require("serverless-http");
 const crypto = require("node:crypto");
 const { 
     generateRegistrationOptions, 
